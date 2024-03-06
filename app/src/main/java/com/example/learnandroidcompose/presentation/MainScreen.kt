@@ -1,6 +1,5 @@
-package com.example.learnandroidcompose
+package com.example.learnandroidcompose.presentation
 
-import android.widget.Space
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +14,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -27,14 +27,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun MainScreen(
-    modifier: Modifier
+    modifier: Modifier,
+    uiState: MainState,
+    onAValueChanged: (String) -> Unit,
+    onBValueChanged: (String) -> Unit,
+    resolveX: (Double, Double) -> Unit
 ) {
-    var a by rememberSaveable { mutableStateOf("") }
-    var b by rememberSaveable { mutableStateOf("") }
-    var x by rememberSaveable { mutableStateOf("") }
 
     val context = LocalContext.current
 
@@ -60,14 +62,14 @@ fun MainScreen(
 
             Column {
                 CustomEditText(
-                    value = a,
-                    onValueChange = { a = it },
+                    value = uiState.a,
+                    onValueChange = onAValueChanged,
                     prefixText = "a ="
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 CustomEditText(
-                    value = b,
-                    onValueChange = { b = it },
+                    value = uiState.b,
+                    onValueChange = onBValueChanged,
                     prefixText = "b ="
                 )
             }
@@ -75,10 +77,10 @@ fun MainScreen(
 
             FilledTonalButton(
                 onClick = {
-                    if (a.isNotEmpty() && b.isNotEmpty()) {
-                        val aDouble = a.toDouble()
-                        val bDouble = a.toDouble()
-                        x = resolveX(aDouble, bDouble)
+                    if (uiState.a.isNotEmpty() && uiState.b.isNotEmpty()) {
+                        val aDouble = uiState.a.toDouble()
+                        val bDouble = uiState.b.toDouble()
+                        resolveX(aDouble, bDouble)
                     } else {
                         Toast.makeText(context, "Пожалуйста, заполните поля 'a =' и 'b ='",
                             Toast.LENGTH_LONG).show()
@@ -90,30 +92,10 @@ fun MainScreen(
             Spacer(modifier = Modifier.width(15.dp))
 
             Text(
-                text = "x = $x",
+                text = "x = ${uiState.x}",
                 fontSize = 18.sp
             )
         }
-    }
-}
-
-private fun resolveX(a: Double, b: Double): String {
-    return if (a == 0.0) {
-        if (b < 0) {
-            "∞"
-        } else {
-            "Неравенство не имеет решения"
-        }
-    } else if (b == 0.0 ) {
-        if (a < 0.0) {
-            "+ бесконечность"
-        } else {
-//            "-∞"
-            "- бесконечность"
-        }
-    } else {
-        val x = -b * a
-        x.toString()
     }
 }
 
@@ -137,7 +119,13 @@ fun CustomEditText(
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MainScreen(modifier = Modifier)
+    MainScreen(
+        modifier = Modifier,
+        uiState = MainState("1", "2", "3"),
+        {},
+        {},
+        { a, b -> }
+    )
 }
 
 @Preview(showBackground = true)

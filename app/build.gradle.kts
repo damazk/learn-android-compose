@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -60,10 +62,26 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Lifecycle Compose ViewModel
+    val androidxLifecycle = "2.6.2"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$androidxLifecycle")
+    // Lifecycle Compose Runtime
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:$androidxLifecycle")
+
+    // Dagger Hilt
+    val dagger_hilt_version = "2.48"
+    implementation("com.google.dagger:hilt-android:$dagger_hilt_version")
+    ksp("com.google.dagger:hilt-android-compiler:$dagger_hilt_version")
+
+    // Hilt Navigation Compose
+    val hilt_navigation_compose = "1.1.0"
+    implementation("androidx.hilt:hilt-navigation-compose:$hilt_navigation_compose")
 }

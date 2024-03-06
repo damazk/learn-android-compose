@@ -6,15 +6,21 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.learnandroidcompose.presentation.MainScreen
+import com.example.learnandroidcompose.presentation.MainViewModel
 import com.example.learnandroidcompose.ui.theme.LearnAndroidComposeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             LearnAndroidComposeTheme {
                 // A surface container using the 'background' color from the theme
@@ -22,25 +28,19 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(modifier = Modifier)
+
+                    val viewModel: MainViewModel = hiltViewModel()
+                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                    MainScreen(
+                        modifier = Modifier,
+                        uiState,
+                        { viewModel.onAValueChanged(it) },
+                        { viewModel.onBValueChanged(it) },
+                        { a, b -> viewModel.resolveX(a, b) }
+                    )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    LearnAndroidComposeTheme {
-        Greeting("Android")
     }
 }
