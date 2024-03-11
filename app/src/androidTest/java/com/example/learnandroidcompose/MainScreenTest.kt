@@ -23,7 +23,7 @@ class MainScreenTest {
 
         composeTestRule.setContent {
             LearnAndroidComposeTheme {
-                MainScreen(modifier = Modifier, resolveX = xResolver::resolveX)
+                MainScreen(modifier = Modifier, resolveX = xResolver::resolve)
             }
         }
 

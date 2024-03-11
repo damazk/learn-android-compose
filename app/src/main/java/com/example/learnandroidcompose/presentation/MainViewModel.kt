@@ -1,19 +1,21 @@
 package com.example.learnandroidcompose.presentation
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.learnandroidcompose.domain.XResolver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class MainState(
     val a: String = "",
     val b: String = "",
     val x: String = "?",
+    val n: String = "",
+    val result: String = "",
+    val isFibonacciInProgress: Boolean = false,
+    val fibonacciResult: String = ""
 )
 
 @HiltViewModel
@@ -32,7 +34,19 @@ class MainViewModel @Inject constructor(): ViewModel() {
         _uiState.update { it.copy(b = b) }
     }
 
+    fun onNValueChanged(n: String) {
+        _uiState.update { it.copy(n = n) }
+    }
+
     fun resolveX(a: Double, b: Double) {
-        _uiState.update { it.copy(x = xResolver.resolveX(a, b)) }
+        _uiState.update { it.copy(x = xResolver.resolve(a, b)) }
+    }
+
+    fun onResolveFibonacciClicked(isFibonacciInProgress: Boolean) {
+        _uiState.update { it.copy(isFibonacciInProgress = !isFibonacciInProgress) }
+    }
+
+    fun onFibonacciResolved(fibonacciResult: String) {
+        _uiState.update { it.copy(fibonacciResult = fibonacciResult) }
     }
 }

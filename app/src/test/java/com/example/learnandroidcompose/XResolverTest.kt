@@ -11,7 +11,7 @@ class XResolverTest {
     fun resolveXTest() {
         val a = 2.0
         val b = 1.0
-        val x = xResolver.resolveX(a, b)
+        val x = xResolver.resolve(a, b)
         assertEquals(x, "x < -0.5")
     }
 }

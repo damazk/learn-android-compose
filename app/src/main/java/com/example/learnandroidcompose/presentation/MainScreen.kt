@@ -35,13 +35,17 @@ fun MainScreen(
     uiState: MainState,
     onAValueChanged: (String) -> Unit,
     onBValueChanged: (String) -> Unit,
-    resolveX: (Double, Double) -> Unit
+    onNValueChanged: (String) -> Unit,
+    resolveX: (Double, Double) -> Unit,
+    onResolveFibonacciClicked: (Boolean) -> Unit
 ) {
 
     val context = LocalContext.current
 
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 15.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Spacer(modifier = Modifier.height(15.dp))
@@ -52,13 +56,13 @@ fun MainScreen(
             fontSize = 24.sp,
             textAlign = TextAlign.Center
         )
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.width(15.dp))
 
             Column {
                 CustomEditText(
@@ -96,6 +100,49 @@ fun MainScreen(
                 fontSize = 18.sp
             )
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Фибоначчи",
+            fontSize = 24.sp,
+            textAlign = TextAlign.Center
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CustomEditText(
+                value = uiState.n,
+                onValueChange = onNValueChanged,
+                prefixText = "n ="
+            )
+
+            Spacer(modifier = Modifier.width(15.dp))
+            FilledTonalButton(
+                onClick = {
+                    if (uiState.n.isNotEmpty()) {
+                        onResolveFibonacciClicked(uiState.isFibonacciInProgress)
+                    } else {
+                        Toast.makeText(context, "Пожалуйста, заполните поле 'n ='",
+                            Toast.LENGTH_LONG).show()
+                    }
+                }
+            ) {
+                Text(
+                    text = if (uiState.isFibonacciInProgress) "Остановить" else "Найти n фибоначчи"
+                )
+            }
+        }
+
+        Text(
+            modifier = Modifier.padding(start = 5.dp, top = 20.dp),
+            text = "Результат: ${uiState.fibonacciResult}",
+            fontSize = 18.sp
+        )
     }
 }
 
@@ -124,7 +171,9 @@ fun MainScreenPreview() {
         uiState = MainState("1", "2", "3"),
         {},
         {},
-        { a, b -> }
+        {},
+        { a, b -> },
+        {}
     )
 }
 
